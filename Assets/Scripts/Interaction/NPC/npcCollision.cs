@@ -10,11 +10,13 @@ public class npcCollision : MonoBehaviour
     private Dictionary<string, string> textPneumoniaDatabase = new Dictionary<string, string>();
     private Dictionary<int, string> helpHBP = new Dictionary<int, string>();
     private Dictionary<int, string> helpPneumonia = new Dictionary<int, string>();
+    private bool keyStart; // history
     private bool keyOptionOne; // history
     private bool keyOptionTwo; // condition
     private bool keyOptionThree; // treatment choice
     private bool keyOptionFour; // treatment 1
     private bool keyOptionFive; // treatment 2
+    private bool keyOptionSix; // treatment 3
     private bool keyHelp; // help
     private bool keySwitch; // switch status
     private int helpCount = 2;
@@ -28,20 +30,21 @@ public class npcCollision : MonoBehaviour
         // canvas.transform.GetChild(1).gameObject.SetActive(false);
 
         // Set up general text database
-        textDatabase.Add("start", "Hello. How would you like to treat the patient?");
+        textDatabase.Add("initial", "Press Spacebar to start chat");
+        textDatabase.Add("start", "Hello. How would you like to treat the patient? 1. Check history 2. Patient condition 3. Treat patient H. Help C. Change patient");
         textDatabase.Add("history", "Checking patient history...");
-        textDatabase.Add("treatmentChoice", "What treatment would you like to administer?");
+        textDatabase.Add("treatmentChoice", "What treatment would you like to administer? 4. Nifedipine 5. Oxygen 6. Fluid");
+        textDatabase.Add("drugNifedipine60mg", "Administering Nifedipine 60mg");
+        textDatabase.Add("oxygen3l", "Administering oxygen 3 litres");
+        textDatabase.Add("fluid250ml", "Administering fluid 250ml");
         
         // Set up High Blood Pressure text database
-        textHBPDatabase.Add("drugNifedipine60mg", "Administering Nifedipine 60mg");
         textHBPDatabase.Add("condition", "Patient has cold sweat");
         helpHBP.Add(0, "No hints left!");
         helpHBP.Add(2, "Hint 1: Patient may have high blood pressure");
         helpHBP.Add(1, "Hint 2: Administer Nifedipine 60mg");
 
         // Set up Pneumonia text database
-        textPneumoniaDatabase.Add("oxygen3l", "Administering oxygen 3 litres");
-        textPneumoniaDatabase.Add("fluid250ml", "Administering fluid 250ml");
         textPneumoniaDatabase.Add("condition", "Patient has breathlessness");
         helpPneumonia.Add(0, "No hints left!");
         helpPneumonia.Add(2, "Hint 1: Patient may have pneumonia");
@@ -52,21 +55,22 @@ public class npcCollision : MonoBehaviour
     void Update()
     {   
         // Set up input keys
+        keyStart = Input.GetKeyDown(KeyCode.Space); // start chat
         keyOptionOne = Input.GetKeyDown(KeyCode.Alpha1); // history
         keyOptionTwo = Input.GetKeyDown(KeyCode.Alpha2); // condition
         keyOptionThree = Input.GetKeyDown(KeyCode.Alpha3); // treatment choice
         keyOptionFour = Input.GetKeyDown(KeyCode.Alpha4); // treatment 1
         keyOptionFive = Input.GetKeyDown(KeyCode.Alpha5); // treatment 2
+        keyOptionSix = Input.GetKeyDown(KeyCode.Alpha6); // treatment 3
         keyHelp = Input.GetKeyDown(KeyCode.H); // help
         keySwitch = Input.GetKeyDown(KeyCode.C); // switch status
 
-        ShowTextOption(keyOptionOne, keyOptionTwo, keyOptionThree, keyOptionFour, keyOptionFive, keyHelp, keySwitch);
+        ShowTextOption(keyStart, keyOptionOne, keyOptionTwo, keyOptionThree, keyOptionFour, keyOptionFive, keyOptionSix, keyHelp, keySwitch);
     }
 
     private void OnTriggerEnter(Collider other) {
-            Debug.Log("Trigger Entered");
             canvas.gameObject.SetActive(true);
-            canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["start"];
+            canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["initial"];
             // if (other.CompareTag("Doctor")) {
             //     Debug.Log("Open chat");
             //     canvas.gameObject.SetActive(true);
@@ -74,7 +78,6 @@ public class npcCollision : MonoBehaviour
         }
 
     private void OnTriggerExit(Collider other) {
-            Debug.Log("Trigger Exit");
             canvas.gameObject.SetActive(false);
             // if (other.CompareTag("Doctor")) {
             //     canvas.gameObject.SetActive(false);
@@ -83,8 +86,12 @@ public class npcCollision : MonoBehaviour
             // }
         }
     
-    private void ShowTextOption(bool keyOptionOne, bool keyOptionTwo, bool keyOptionThree, bool keyOptionFour, bool keyOptionFive, bool keyHelp, bool keySwitch) {
+    private void ShowTextOption(bool keyStart, bool keyOptionOne, bool keyOptionTwo, bool keyOptionThree, bool keyOptionFour, bool keyOptionFive, bool keyOptionSix, bool keyHelp, bool keySwitch) {
             // Cases for text to appear
+            if (keyStart)
+                {
+                    canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["start"];
+                }
             if (keyOptionOne)
                 {
                     canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["history"];
@@ -92,6 +99,18 @@ public class npcCollision : MonoBehaviour
             if (keyOptionThree)
                 {
                     canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["treatmentChoice"];
+                }
+            if (keyOptionFour)
+                {
+                    canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["drugNifedipine60mg"];
+                }
+            if (keyOptionFive)
+                {
+                    canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["oxygen3l"];
+                }
+            if (keyOptionSix)
+                {
+                    canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textDatabase["fluid250ml"];
                 }
             if (keySwitch)
                 {
@@ -111,10 +130,6 @@ public class npcCollision : MonoBehaviour
                     {
                         canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textHBPDatabase["condition"];
                     }
-                if (keyOptionFour)
-                    {
-                        canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textHBPDatabase["drugNifedipine60mg"];
-                    }
                 if (keyHelp)
                     {
                         canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = helpHBP[helpCount];
@@ -128,14 +143,6 @@ public class npcCollision : MonoBehaviour
                 if (keyOptionTwo)
                     {
                         canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textPneumoniaDatabase["condition"];
-                    }
-                if (keyOptionFour)
-                    {
-                        canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textPneumoniaDatabase["oxygen3l"];
-                    }
-                if (keyOptionFive)
-                    {
-                        canvas.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Text>().text = textPneumoniaDatabase["fluid250ml"];
                     }
                 if (keyHelp)
                     {
