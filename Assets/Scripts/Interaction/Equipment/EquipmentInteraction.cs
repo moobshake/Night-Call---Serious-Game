@@ -20,7 +20,7 @@ public class EquipmentInteraction : MonoBehaviour
     public string ongoingTask;
     private int fluidAmtSelected;
 
-    //list of tasks:
+    //list of tasks/states, this is to enable player to have different interactions with the same equipment depending on the different states
     //  [IVbagInjection, FinishedSelectingVial]
 
 
@@ -108,6 +108,7 @@ public class EquipmentInteraction : MonoBehaviour
 
     void IVbagInjection()
     {
+        //this is to transition to the scene where you choose medication
         /*
         cameraPos = Camera.main.transform.position;
         target = GameObject.Find("MedicationVials");
@@ -120,10 +121,13 @@ public class EquipmentInteraction : MonoBehaviour
         */
         
         
-
         
+
+        //this is to display buttons for the amt of fluid to administer
         fluidAmtButtonSetActive();
         closeButtonX.gameObject.SetActive(true);
+
+        
         
         
 
@@ -133,7 +137,7 @@ public class EquipmentInteraction : MonoBehaviour
     {
         GameObject currentVial;
 
-        //remove all vials that were not selected, shift selected vial to center of table
+        //remove all vials that were not selected, shift selected vial to center of table animation
 
         if (selectedObj == "Medication Vial 1")
         {
@@ -185,7 +189,7 @@ public class EquipmentInteraction : MonoBehaviour
         while (true)
         {
             Vector3 startPos = currentVial.transform.position;
-            Vector3 newPos = target.transform.position + new Vector3(0, -0.042f, 0.05f);
+            Vector3 newPos = target.transform.position + new Vector3(0, -0.042f, 0.075f);
 
             currentVial.transform.position = Vector3.Lerp(startPos, newPos, 2 * Time.deltaTime);
             Debug.Log("I am enumerating");
