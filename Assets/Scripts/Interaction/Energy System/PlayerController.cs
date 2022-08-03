@@ -80,5 +80,7 @@ public class PlayerController : MonoBehaviour
         {
             isDrank = false;
         }
+        prompt.GetComponent<Prompt>().promptText = "";
+        prompt.GetComponent<Prompt>().isPromptUpdated = false;
     }
 }
